@@ -1,0 +1,92 @@
+class Personaje:
+    def __init__(self, codigo, apodo, traje):
+        self.apodo = apodo
+        self.traje = traje
+        self._activo = True
+        self._sala = "Comedor"
+        self.__codigo = codigo
+ 
+    def get_codigo(self):
+        return self.__codigo
+ 
+    def esta_activo(self):
+        return self._activo
+ 
+    def caminar(self, sala):
+        if self._activo:
+            self._sala = sala
+            print(self.apodo, "camina hacia", sala)
+        else:
+            print(self.apodo, "ya no puede caminar")
+ 
+    def avisar_cadaver(self, muerto):
+        print(self.apodo, "encontro a", muerto.apodo, "en", muerto._sala)
+ 
+    def acusar(self, sospechoso):
+        print(self.apodo, "acusa a", sospechoso.apodo)
+ 
+    def fallecer(self):
+        self._activo = False
+        print(self.apodo, "ha fallecido")
+ 
+ 
+class Astronauta(Personaje):
+    def __init__(self, codigo, apodo, traje, misiones_totales):
+        super().__init__(codigo, apodo, traje)
+        self.misiones_totales = misiones_totales
+        self._misiones_hechas = 0
+ 
+    def completar_mision(self, mision):
+        self._misiones_hechas = self._misiones_hechas + 1
+        print(self.apodo, "completo la mision", mision)
+ 
+    def reparar_sistema(self, sistema):
+        print(self.apodo, "repara", sistema)
+ 
+    def mostrar_avance(self):
+        print(self.apodo, "completo", self._misiones_hechas, "de", self.misiones_totales, "misiones")
+ 
+ 
+class Traidor(Personaje):
+    def __init__(self, codigo, apodo, traje, tiempo_espera):
+        super().__init__(codigo, apodo, traje)
+        self.tiempo_espera = tiempo_espera
+        self.__victimas = 0
+ 
+    def atacar(self, victima):
+        if victima.esta_activo():
+            print(self.apodo, "ataca a", victima.apodo)
+            victima.fallecer()
+            self.__victimas = self.__victimas + 1
+ 
+    def cerrar_puertas(self, sala):
+        print(self.apodo, "cierra las puertas de", sala)
+ 
+    def entrar_al_ducto(self, destino):
+        print(self.apodo, "se mete en el ducto")
+        self.caminar(destino)
+ 
+    def get_victimas(self):
+        return self.__victimas
+ 
+ 
+p1 = Astronauta(1, "Sofia", "Amarillo", 6)
+p2 = Astronauta(2, "Mateo", "Naranja", 3)
+p3 = Traidor(3, "Diego", "Negro", 5)
+ 
+p1.caminar("Motores")
+p1.completar_mision("Alinear motor")
+p2.caminar("Escudos")
+p2.reparar_sistema("Escudos")
+p2.completar_mision("Activar escudos")
+p3.caminar("Motores")
+p3.cerrar_puertas("Motores")
+p3.atacar(p1)
+p2.avisar_cadaver(p1)
+p2.acusar(p3)
+p3.entrar_al_ducto("Comunicaciones")
+ 
+p1.mostrar_avance()
+p2.mostrar_avance()
+print("Victimas de", p3.apodo, ":", p3.get_victimas())
+ 
